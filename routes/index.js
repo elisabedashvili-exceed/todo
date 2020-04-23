@@ -1,29 +1,49 @@
 var express = require('express');
 var router = express.Router();
 
-/* GET home page. */
-router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
-});
+const todoItems = [
+  {
+    value: 'test',
+    checked: true,
+    id: 1,
+  },
+  {
+    value: 'test2',
+    checked: true,
+    id: 2,
+  },
+  {
+    value: 'test3',
+    checked: false,
+    id: 3
+  },
+];
 
-// send array of todoitems
-router.post('/', (req, res, next) => {
-  res.send([]);
+/* GET all todoItems. */
+router.get('/', (req, res, next) => {
+  res.send(todoItems);
 });
 
 // create todoitem
 router.post('/', (req, res, next) => {
-  res.send([]);
+  res.send([
+    ...todoItems,
+    {
+      value: 'test4',
+      checked: false,
+      id: 4
+    }
+  ]);
 });
 
 // edit todoitem
-router.post('/', (req, res, next) => {
-  res.send([]);
+router.post('/', (req, res, next, newValue, index) => {
+  res.send(todoItems[index].value = newValue);
 });
 
 // delete todoitem
-router.post('/', (req, res, next) => {
-  res.send([]);
+router.delete('/', (req, res, next) => {
+  res.send(todoItems[index]);
 });
 
 module.exports = router;

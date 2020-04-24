@@ -25,25 +25,30 @@ router.get('/', (req, res, next) => {
 });
 
 // create todoitem
-router.post('/', (req, res, next) => {
-  res.send([
-    ...todoItems,
+router.post('/add', (req, res, next) => {
+  res.send(req.body.push(
     {
       value: 'test4',
       checked: false,
       id: 4
     }
-  ]);
+    ));
 });
 
 // edit todoitem
-router.post('/', (req, res, next, newValue, index) => {
-  res.send(todoItems[index].value = newValue);
+router.put('/', (req, res, next, newValue, index, id) => {
+  if (req.body[index].id === id) {
+    req.body[index].value = newValue
+  }  
+  res.send('req.body');
 });
 
 // delete todoitem
-router.delete('/', (req, res, next) => {
-  res.send(todoItems[index]);
+router.delete('/', (req, res, next, index, id) => {
+  if (req.body[index].id === id) {
+    req.body.splice(index, 1); 
+  }
+  res.send(req.body);
 });
 
 module.exports = router;

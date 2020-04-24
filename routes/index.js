@@ -55,8 +55,9 @@ router.put('/edit/:todoid', (req, res, next) => {
 router.delete('/delete/:todoid', (req, res, next) => {
   todoItems = todoItems.map(item => {
     if (item.id === +req.params.todoid) {
-      todoItems.splice(todoItems.indexOf(item), 1);
-      return todoItems;
+      return items = '';
+    } else {
+      return item;
     }
   })
   res.send(todoItems);

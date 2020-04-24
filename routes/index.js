@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 
-const todoItems = [
+let todoItems = [
   {
     value: 'test',
     checked: true,
@@ -26,29 +26,40 @@ router.get('/', (req, res, next) => {
 
 // create todoitem
 router.post('/add', (req, res, next) => {
-  res.send(req.body.push(
-    {
-      value: 'test4',
-      checked: false,
-      id: 4
-    }
-    ));
+    todoItems.push(
+      {
+        value: 'test4',
+        checked: false,
+        id: 4
+      }
+    );
+    res.send(todoItems);
 });
 
 // edit todoitem
-router.put('/', (req, res, next, newValue, index, id) => {
-  if (req.body[index].id === id) {
-    req.body[index].value = newValue
-  }  
-  res.send('req.body');
+router.put('/edit/:todoid', (req, res, next) => { 
+  todoItems = todoItems.map(item => {
+    if (item.id === +req.params.todoid) {
+      return {
+        ...req.body,
+        id: +req.params.todoid
+      }
+    } else {
+      return item;
+    }
+  });
+  res.send('array was updated');
 });
 
 // delete todoitem
-router.delete('/', (req, res, next, index, id) => {
-  if (req.body[index].id === id) {
-    req.body.splice(index, 1); 
-  }
-  res.send(req.body);
+router.delete('/delete/:todoid', (req, res, next) => {
+  todoItems = todoItems.map(item => {
+    if (item.id === +req.params.todoid) {
+      todoItems.splice(todoItems.indexOf(item), 1);
+      return todoItems;
+    }
+  })
+  res.send(todoItems);
 });
 
 module.exports = router;

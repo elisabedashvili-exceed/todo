@@ -53,10 +53,8 @@ router.put('/edit/:todoid', (req, res, next) => {
 
 // delete todoitem
 router.delete('/delete/:todoid', (req, res, next) => {
-  todoItems = todoItems.map(item => {
-    if (item.id === +req.params.todoid) {
-      return items = '';
-    } else {
+  todoItems = todoItems.filter(item => {
+    if (item.id !== +req.params.todoid) {
       return item;
     }
   })

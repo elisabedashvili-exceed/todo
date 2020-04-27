@@ -28,9 +28,8 @@ router.get('/', (req, res, next) => {
 router.post('/add', (req, res, next) => {
     todoItems.push(
       {
-        value: 'test4',
-        checked: false,
-        id: 4
+        ...req.body,
+        id: Math.floor(Math.random() * 10000000)
       }
     );
     res.send(todoItems);

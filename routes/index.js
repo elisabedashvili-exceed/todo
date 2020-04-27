@@ -61,14 +61,3 @@ router.delete('/delete/:todoid', (req, res, next) => {
 });
 
 module.exports = router;
-
-
-
-/* create 4 routes
-1. one route will send array of todoitems
-2. one route will create todoitem
-3. one route will edit todoitem by id
-4. route will delete todoitem by id
-also
-create a mock data array of todoItems on the server side
-and work with him */

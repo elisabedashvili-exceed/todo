@@ -1,63 +1,51 @@
 var express = require('express');
 var router = express.Router();
+var mongoose = require("mongoose");
+mongoose.Promise = global.Promise;
+var uri = "mongodb+srv://vaxo_nba:Swz8qfii9kkK9I1d@firstcluster-5d6tv.mongodb.net/test?retryWrites=true&w=majority";
+mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true})
 
-let todoItems = [
-  {
-    value: 'test',
-    checked: true,
-    id: 1,
-  },
-  {
-    value: 'test2',
-    checked: true,
-    id: 2,
-  },
-  {
-    value: 'test3',
-    checked: false,
-    id: 3
-  },
-];
+let todoItemsSchema = new mongoose.Schema({
+  value: String,
+  checked: Boolean,
+  id: Number
+});
 
-/* GET all todoItems. */
+let Item = mongoose.model("Item", todoItemsSchema);
+
 router.get('/', (req, res, next) => {
-  res.send(todoItems);
+  
 });
 
-// create todoitem
 router.post('/add', (req, res, next) => {
-    todoItems.push(
-      {
-        ...req.body,
-        id: Math.floor(Math.random() * 10000000)
-      }
-    );
-    res.send(todoItems);
+  let toDoList = new Item(req.body);
+  toDoList.save()
+    .then(item => {
+      res.send("item saved to database" + toDoList);
+    })
+    .catch(err => {
+      res.status(400).send("unable to save to database");
+    });
 });
 
-// edit todoitem
 router.put('/edit/:todoid', (req, res, next) => { 
-  todoItems = todoItems.map(item => {
-    if (item.id === +req.params.todoid) {
-      return {
-        ...req.body,
-        id: +req.params.todoid
-      }
-    } else {
-      return item;
-    }
-  });
-  res.send('array was updated');
+  Item.update({ id: req.params.todoid }, req.body)
+  .then(doc => {
+    if (!doc) {return res.status(404).end(); }
+    return res.status(200).json(doc);
+  })
+  .catch(err => next(err));
 });
 
-// delete todoitem
 router.delete('/delete/:todoid', (req, res, next) => {
-  todoItems = todoItems.filter(item => {
-    if (item.id !== +req.params.todoid) {
-      return item;
-    }
+  Item.deleteOne({ id: req.params.todoid }, function (err) {
+    if (err) return handleError(err);
   })
-  res.send(todoItems);
+  .then(doc => {
+    if (!doc) {return res.status(404).end(); }
+    return res.status(200).json(doc);
+  })
+  .catch(err => next(err));
 });
 
 module.exports = router;

@@ -17,6 +17,7 @@ router.get('/', (req, res, next) => {
   Item.find(function (err, items) {
     if (err) return console.error(err);
     res.send(items);
+    return;
   })
   .then(doc => {
     if (!doc) {return res.status(404).end(); }
@@ -25,8 +26,10 @@ router.get('/', (req, res, next) => {
   .catch(err => next(err));
 });
 
-router.post('/add', (req, res, next) => {
+router.post('/add', (req, res, next) => { 
+  if (Object.keys(req.body).length > 0) {
   let toDoList = new Item(req.body);
+
   toDoList.save()
     .then(item => {
       res.send("item saved to database" + toDoList);
@@ -34,10 +37,13 @@ router.post('/add', (req, res, next) => {
     .catch(err => {
       res.status(400).send("unable to save to database");
     });
+  } else {
+    res.send("please fill in the body");
+  } 
 });
 
 router.put('/edit/:todoid', (req, res, next) => { 
-  Item.update({ id: req.params.todoid }, req.body)
+  Item.update({ _id: req.params.todoid }, req.body)
   .then(doc => {
     if (!doc) {return res.status(404).end(); }
     return res.status(200).json(doc);
@@ -46,7 +52,7 @@ router.put('/edit/:todoid', (req, res, next) => {
 });
 
 router.delete('/delete/:todoid', (req, res, next) => {
-  Item.deleteOne({ id: req.params.todoid }, function (err) {
+  Item.deleteOne({ _id: req.params.todoid }, function (err) {
     if (err) return handleError(err);
   })
   .then(doc => {

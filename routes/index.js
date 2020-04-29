@@ -14,7 +14,10 @@ let todoItemsSchema = new mongoose.Schema({
 let Item = mongoose.model("Item", todoItemsSchema);
 
 router.get('/', (req, res, next) => {
-  
+  Item.find(function (err, items) {
+    if (err) return console.error(err);
+    res.send(items);
+  })
 });
 
 router.post('/add', (req, res, next) => {

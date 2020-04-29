@@ -18,6 +18,11 @@ router.get('/', (req, res, next) => {
     if (err) return console.error(err);
     res.send(items);
   })
+  .then(doc => {
+    if (!doc) {return res.status(404).end(); }
+    return res.status(200).json(doc);
+  })
+  .catch(err => next(err));
 });
 
 router.post('/add', (req, res, next) => {

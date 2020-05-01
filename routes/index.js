@@ -7,8 +7,7 @@ mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true})
 
 let todoItemsSchema = new mongoose.Schema({
   value: String,
-  checked: Boolean,
-  id: Number
+  checked: Boolean
 });
 
 let Item = mongoose.model("Item", todoItemsSchema);
@@ -29,7 +28,6 @@ router.get('/', (req, res, next) => {
 router.post('/add', (req, res, next) => { 
   if (Object.keys(req.body).length > 0) {
   let toDoList = new Item(req.body);
-
   toDoList.save()
     .then(item => {
       res.send("item saved to database" + toDoList);

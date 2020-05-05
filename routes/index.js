@@ -12,8 +12,8 @@ let todoItemsSchema = new mongoose.Schema({
 
 let Item = mongoose.model("Item", todoItemsSchema);
 
-router.get('/', (req, res, next) => {
-  Item.find(function (err, items) {
+router.get('/', async (req, res, next) => {
+  await Item.find(function (err, items) {
     if (err) return console.error(err);
     res.send(items);
     return;
@@ -25,10 +25,10 @@ router.get('/', (req, res, next) => {
   .catch(err => next(err));
 });
 
-router.post('/add', (req, res, next) => { 
+router.post('/add', async (req, res, next) => { 
   if (Object.keys(req.body).length > 0) {
   let toDoList = new Item(req.body);
-  toDoList.save()
+  await toDoList.save()
     .then(item => {
       res.send("item saved to database" + toDoList);
     })
@@ -40,8 +40,8 @@ router.post('/add', (req, res, next) => {
   } 
 });
 
-router.put('/edit/:todoid', (req, res, next) => { 
-  Item.updateOne({ _id: req.params.todoid }, req.body)
+router.put('/edit/:todoid', async (req, res, next) => { 
+  await Item.updateOne({ _id: req.params.todoid }, req.body)
   .then(doc => {
     if (!doc) {return res.status(404).end(); }
     return res.status(200).json(doc);
@@ -49,8 +49,8 @@ router.put('/edit/:todoid', (req, res, next) => {
   .catch(err => next(err));
 });
 
-router.put('/selectAll', (req, res, next) => { 
-  Item.updateMany({checked: false}, {checked: true})
+router.put('/selectAll', async (req, res, next) => { 
+ await Item.updateMany({checked: false}, {checked: true})
   .then(doc => {
     if (!doc) {return res.status(404).end(); }
     return res.status(200).json(doc);
@@ -58,8 +58,8 @@ router.put('/selectAll', (req, res, next) => {
   .catch(err => next(err));
 });
 
-router.put('/unSelectAll', (req, res, next) => { 
-  Item.updateMany({checked: true}, {checked: false})
+router.put('/unSelectAll', async (req, res, next) => { 
+  await Item.updateMany({checked: true}, {checked: false})
   .then(doc => {
     if (!doc) {return res.status(404).end(); }
     return res.status(200).json(doc);
@@ -67,8 +67,8 @@ router.put('/unSelectAll', (req, res, next) => {
   .catch(err => next(err));
 });
 
-router.delete('/delete/:todoid', (req, res, next) => {
-  Item.deleteOne({ _id: req.params.todoid }, function (err) {
+router.delete('/delete/:todoid', async (req, res, next) => {
+  await Item.deleteOne({ _id: req.params.todoid }, function (err) {
     if (err) return handleError(err);
   })
   .then(doc => {
@@ -78,8 +78,8 @@ router.delete('/delete/:todoid', (req, res, next) => {
   .catch(err => next(err));
 });
 
-router.delete('/deleteSelected', (req, res, next) => {
-  Item.deleteMany({checked: true}, function (err) {
+router.delete('/deleteSelected', async (req, res, next) => {
+  await Item.deleteMany({checked: true}, function (err) {
     if (err) return handleError(err);
   })
   .then(doc => {

@@ -1,8 +1,8 @@
-var express = require('express');
-var router = express.Router();
-var mongoose = require("mongoose");
+const express = require('express');
+const router = express.Router();
+const mongoose = require("mongoose");
 mongoose.Promise = global.Promise;
-var uri = "mongodb+srv://vaxo_nba:Swz8qfii9kkK9I1d@firstcluster-5d6tv.mongodb.net/test?retryWrites=true&w=majority";
+const uri = "mongodb+srv://vaxo_nba:Swz8qfii9kkK9I1d@firstcluster-5d6tv.mongodb.net/test?retryWrites=true&w=majority";
 mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true})
 
 let todoItemsSchema = new mongoose.Schema({
@@ -12,23 +12,48 @@ let todoItemsSchema = new mongoose.Schema({
 
 let Item = mongoose.model("Item", todoItemsSchema);
 
-router.get('/', async (req, res, next) => {
-  await Item.find(function (err, items) {
-    if (err) return console.error(err);
-    res.send(items);
-    return;
-  })
-  .then(doc => {
-    if (!doc) {return res.status(404).end(); }
-    return res.status(200).json(doc);
-  })
-  .catch(err => next(err));
+process.on('unhandledRejection', err => {
+  console.log(err);
 });
 
-router.post('/add', async (req, res, next) => { 
+router.get('/test', (req, res) => {
+  const p2 = new Promise((resolve, reject) => {
+    resolve(1);
+  });
+  p2.then(result1 => {
+    console.log('------result1:', result1);
+    return result1+1;
+  }).then(result2 => {
+    console.log('------result2:', result2);
+    const result3 = result2 + 1;
+    return;
+  }).then(result => {
+    console.log('------result:', result);
+  }) ;
+})
+
+router.get('/', (req, res, next) => {
+  Item.find((err, items) => {
+    if (err) {
+      return console.error(err);
+    } 
+    next();
+  })
+  .then(doc => {
+    if (!doc) {
+      res.status(404).end(); 
+      return;
+    }
+    res.status(200).send(doc);
+    return;
+  })
+  .catch(err => next(err))
+});
+
+router.post('/add', (req, res, next) => { 
   if (Object.keys(req.body).length > 0) {
   let toDoList = new Item(req.body);
-  await toDoList.save()
+  toDoList.save()
     .then(item => {
       res.send("item saved to database" + toDoList);
     })
@@ -40,8 +65,8 @@ router.post('/add', async (req, res, next) => {
   } 
 });
 
-router.put('/edit/:todoid', async (req, res, next) => { 
-  await Item.updateOne({ _id: req.params.todoid }, req.body)
+router.put('/edit/:todoid', (req, res, next) => { 
+  Item.updateOne({ _id: req.params.todoid }, req.body)
   .then(doc => {
     if (!doc) {return res.status(404).end(); }
     return res.status(200).json(doc);
@@ -49,8 +74,8 @@ router.put('/edit/:todoid', async (req, res, next) => {
   .catch(err => next(err));
 });
 
-router.put('/selectAll', async (req, res, next) => { 
- await Item.updateMany({checked: false}, {checked: true})
+router.put('/selectAll', (req, res, next) => { 
+ Item.updateMany({checked: false}, {checked: true})
   .then(doc => {
     if (!doc) {return res.status(404).end(); }
     return res.status(200).json(doc);
@@ -58,8 +83,8 @@ router.put('/selectAll', async (req, res, next) => {
   .catch(err => next(err));
 });
 
-router.put('/unSelectAll', async (req, res, next) => { 
-  await Item.updateMany({checked: true}, {checked: false})
+router.put('/unSelectAll', (req, res, next) => { 
+  Item.updateMany({checked: true}, {checked: false})
   .then(doc => {
     if (!doc) {return res.status(404).end(); }
     return res.status(200).json(doc);
@@ -67,8 +92,8 @@ router.put('/unSelectAll', async (req, res, next) => {
   .catch(err => next(err));
 });
 
-router.delete('/delete/:todoid', async (req, res, next) => {
-  await Item.deleteOne({ _id: req.params.todoid }, function (err) {
+router.delete('/delete/:todoid', (req, res, next) => {
+  Item.deleteOne({ _id: req.params.todoid }, (err) => {
     if (err) return handleError(err);
   })
   .then(doc => {
@@ -78,8 +103,8 @@ router.delete('/delete/:todoid', async (req, res, next) => {
   .catch(err => next(err));
 });
 
-router.delete('/deleteSelected', async (req, res, next) => {
-  await Item.deleteMany({checked: true}, function (err) {
+router.delete('/deleteSelected', (req, res, next) => {
+  Item.deleteMany({checked: true}, (err) => {
     if (err) return handleError(err);
   })
   .then(doc => {

@@ -54,12 +54,15 @@ router.post('/add', (req, res, next) => {
   if (Object.keys(req.body).length > 0) {
   let toDoList = new Item(req.body);
   toDoList.save()
-    .then(item => {
-      res.send("item saved to database" + toDoList);
+    .then(doc => {
+      if (!doc) {
+        res.status(404).end(); 
+        return;
+      }
+      res.status(200).send(doc);
+      return;
     })
-    .catch(err => {
-      res.status(400).send("unable to save to database");
-    });
+    .catch(err => next(err));
   } else {
     res.send("please fill in the body");
   } 
@@ -68,8 +71,12 @@ router.post('/add', (req, res, next) => {
 router.put('/edit/:todoid', (req, res, next) => { 
   Item.updateOne({ _id: req.params.todoid }, req.body)
   .then(doc => {
-    if (!doc) {return res.status(404).end(); }
-    return res.status(200).json(doc);
+    if (!doc) {
+      res.status(404).end(); 
+      return;
+    }
+    res.status(200).send(doc);
+    return;
   })
   .catch(err => next(err));
 });
@@ -77,8 +84,12 @@ router.put('/edit/:todoid', (req, res, next) => {
 router.put('/selectAll', (req, res, next) => { 
  Item.updateMany({checked: false}, {checked: true})
   .then(doc => {
-    if (!doc) {return res.status(404).end(); }
-    return res.status(200).json(doc);
+    if (!doc) {
+      res.status(404).end(); 
+      return;
+    }
+    res.status(200).send(doc);
+    return;
   })
   .catch(err => next(err));
 });
@@ -86,19 +97,27 @@ router.put('/selectAll', (req, res, next) => {
 router.put('/unSelectAll', (req, res, next) => { 
   Item.updateMany({checked: true}, {checked: false})
   .then(doc => {
-    if (!doc) {return res.status(404).end(); }
-    return res.status(200).json(doc);
+    if (!doc) {
+      res.status(404).end(); 
+      return;
+    }
+    res.status(200).send(doc);
+    return;
   })
   .catch(err => next(err));
 });
 
 router.delete('/delete/:todoid', (req, res, next) => {
   Item.deleteOne({ _id: req.params.todoid }, (err) => {
-    if (err) return handleError(err);
+    if (err) {return handleError(err);}
   })
   .then(doc => {
-    if (!doc) {return res.status(404).end(); }
-    return res.status(200).json(doc);
+    if (!doc) {
+      res.status(404).end(); 
+      return;
+    }
+    res.status(200).send(doc);
+    return;
   })
   .catch(err => next(err));
 });
@@ -108,8 +127,12 @@ router.delete('/deleteSelected', (req, res, next) => {
     if (err) return handleError(err);
   })
   .then(doc => {
-    if (!doc) {return res.status(404).end(); }
-    return res.status(200).json(doc);
+    if (!doc) {
+      res.status(404).end(); 
+      return;
+    }
+    res.status(200).send(doc);
+    return;
   })
   .catch(err => next(err));
 });

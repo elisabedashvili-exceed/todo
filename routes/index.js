@@ -60,6 +60,7 @@ router.post('/add', (req, res, next) => {
         return;
       }
       res.status(200).send(doc);
+      console.log(doc);
       return;
     })
     .catch(err => next(err));

@@ -10,7 +10,13 @@ let todoItemsSchema = new mongoose.Schema({
   checked: Boolean
 });
 
+let userSchema = new mongoose.Schema({
+  username: String,
+  password: String
+});
+
 let Item = mongoose.model("Item", todoItemsSchema);
+let User = mongoose.model("User", userSchema);
 
 process.on('unhandledRejection', err => {
   console.log(err);
@@ -136,6 +142,25 @@ router.delete('/deleteSelected', (req, res, next) => {
     return;
   })
   .catch(err => next(err));
+});
+
+router.post('/addUser', (req, res, next) => { 
+  if (Object.keys(req.body).length > 0) {
+  let userList = new User(req.body);
+  userList.save()
+    .then(doc => {
+      if (!doc) {
+        res.status(404).end(); 
+        return;
+      }
+      res.status(200).send(doc);
+      console.log(doc);
+      return;
+    })
+    .catch(err => next(err));
+  } else {
+    res.send("please fill in the body");
+  } 
 });
 
 module.exports = router;

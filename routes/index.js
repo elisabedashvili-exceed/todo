@@ -13,6 +13,21 @@ let todoItemsSchema = new mongoose.Schema({
 
 let Item = mongoose.model("Item", todoItemsSchema);
 
+
+router.get('/boroda', (req, res, next) => {
+
+  res.send('asdasd');
+  // Item.find(function (err, items) {
+  //   if (err) return console.error(err);
+  //   res.send(items);
+  // })
+  //   .then(doc => {
+  //     if (!doc) {return res.status(404).end(); }
+  //     return res.status(200).json(doc);
+  //   })
+  //   .catch(err => next(err));
+});
+
 router.get('/', (req, res, next) => {
   Item.find(function (err, items) {
     if (err) return console.error(err);
@@ -36,7 +51,7 @@ router.post('/add', (req, res, next) => {
     });
 });
 
-router.put('/edit/:todoid', (req, res, next) => { 
+router.put('/edit/:todoid', (req, res, next) => {
   Item.update({ id: req.params.todoid }, req.body)
   .then(doc => {
     if (!doc) {return res.status(404).end(); }

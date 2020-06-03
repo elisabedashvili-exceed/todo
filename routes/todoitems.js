@@ -4,8 +4,6 @@ const mongoose = require("mongoose");
 mongoose.Promise = global.Promise;
 const uri = "mongodb+srv://vaxo_nba:Swz8qfii9kkK9I1d@firstcluster-5d6tv.mongodb.net/test?retryWrites=true&w=majority";
 mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true})
-const bcrypt = require('bcrypt');
-const saltRounds = 10;
 
 let todoItemsSchema = new mongoose.Schema({
   value: String,

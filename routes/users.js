@@ -41,8 +41,22 @@ router.post('/addUser', (req, res, next) => {
     } 
   });
   
-router.post('/addUser/login', (req, res, next) => {
-  res.send((bcrypt.compareSync(req.body.password, "123")))
+router.post('/login', (req, res) => {
+  User.findOne({username: req.body.username})
+  .then((user) => {
+    if (!user) {
+     res.send('No Users Found');
+    } else {
+      bcrypt.compare(req.body.password, user.password, (err, result) => {
+        if (result == true) {
+        res.send('Successfully Logged In');
+        } else {
+          res.send('Incorrect password');
+        }
+      });
+    }
+  })
+  .catch(err => console.log(err))
 });
 
 module.exports = router;

@@ -6,17 +6,7 @@ const uri = "mongodb+srv://vaxo_nba:Swz8qfii9kkK9I1d@firstcluster-5d6tv.mongodb.
 mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true})
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
-
-let userSchema = new mongoose.Schema({
-    username: String,
-    password: String
-  });
-
-let User = mongoose.model("User", userSchema);
-
-process.on('unhandledRejection', err => {
-    console.log(err);
-});
+let { User } = require('../models/users');
 
 router.post('/addUser', (req, res, next) => { 
     if (Object.keys(req.body).length > 0) {

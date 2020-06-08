@@ -1,125 +1,80 @@
 const express = require('express');
 const router = express.Router();
-const mongoose = require("mongoose");
-mongoose.Promise = global.Promise;
-const uri = "mongodb+srv://vaxo_nba:Swz8qfii9kkK9I1d@firstcluster-5d6tv.mongodb.net/test?retryWrites=true&w=majority";
-mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true})
+let { Item } = require('../models/items');
 
-let todoItemsSchema = new mongoose.Schema({
-  value: String,
-  checked: Boolean
-});
-
-let Item = mongoose.model("Item", todoItemsSchema);
-
-process.on('unhandledRejection', err => {
-  console.log(err);
-});
-
-router.get('/', (req, res, next) => {
-  Item.find((err, items) => {
-    if (err) {
-      return console.error(err);
-    } 
-    next();
-  })
+router.get('/', (req, res) => {
+  Item.find({})
   .then(doc => {
-    if (!doc) {
-      res.status(404).end(); 
-      return;
-    }
-    res.status(200).send(doc);
-    return;
+    res.send(doc);
   })
-  .catch(err => next(err))
+  .catch(err => {
+    res.send(err); 
+  })
 });
 
-router.post('/add', (req, res, next) => { 
+router.post('/add', (req, res) => { 
   if (Object.keys(req.body).length > 0) {
   let toDoList = new Item(req.body);
   toDoList.save()
     .then(doc => {
-      if (!doc) {
-        res.status(404).end(); 
-        return;
-      }
-      res.status(200).send(doc);
-      console.log(doc);
-      return;
+      res.send(doc);
     })
-    .catch(err => next(err));
+    .catch(err => {
+      res.send(err); 
+    });
   } else {
     res.send("please fill in the body");
   } 
 });
 
-router.put('/edit/:todoid', (req, res, next) => { 
+router.put('/edit/:todoid', (req, res) => { 
   Item.updateOne({ _id: req.params.todoid }, req.body)
   .then(doc => {
-    if (!doc) {
-      res.status(404).end(); 
-      return;
-    }
-    res.status(200).send(doc);
-    return;
+    res.send(doc);
   })
-  .catch(err => next(err));
+  .catch(err => {
+    res.send(err);
+  });
 });
 
-router.put('/selectAll', (req, res, next) => { 
+router.put('/selectAll', (req, res) => { 
  Item.updateMany({checked: false}, {checked: true})
   .then(doc => {
-    if (!doc) {
-      res.status(404).end(); 
-      return;
-    }
-    res.status(200).send(doc);
-    return;
+    res.send(doc);
   })
-  .catch(err => next(err));
+  .catch(err => {
+    res.send(err);
+  });
 });
 
-router.put('/unSelectAll', (req, res, next) => { 
+router.put('/unSelectAll', (req, res) => { 
   Item.updateMany({checked: true}, {checked: false})
   .then(doc => {
-    if (!doc) {
-      res.status(404).end(); 
-      return;
-    }
-    res.status(200).send(doc);
-    return;
+    res.send(doc);
   })
-  .catch(err => next(err));
+  .catch(err => {
+    res.send(err);
+  });
 });
 
-router.delete('/delete/:todoid', (req, res, next) => {
-  Item.deleteOne({ _id: req.params.todoid }, (err) => {
-    if (err) {return handleError(err);}
-  })
+router.delete('/delete/:todoid', (req, res) => {
+  Item.deleteOne({ _id: req.params.todoid })
   .then(doc => {
-    if (!doc) {
-      res.status(404).end(); 
-      return;
-    }
-    res.status(200).send(doc);
-    return;
+    res.send(doc);
   })
-  .catch(err => next(err));
+  .catch(err => {
+    res.send(err);
+  });
 });
 
-router.delete('/deleteSelected', (req, res, next) => {
-  Item.deleteMany({checked: true}, (err) => {
-    if (err) return handleError(err);
-  })
+router.delete('/deleteSelected', (req, res) => {
+  Item.deleteMany({checked: true})
   .then(doc => {
-    if (!doc) {
-      res.status(404).end(); 
-      return;
-    }
-    res.status(200).send(doc);
-    return;
+    res.send(doc);
   })
-  .catch(err => next(err));
+  .catch(err => {
+    res.send(err);
+  });
 });
 
 module.exports = router;

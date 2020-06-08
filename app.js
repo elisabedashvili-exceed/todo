@@ -26,6 +26,4 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use("/", toDoItemsRouter);
 app.use("/", usersRouter);
 
-// catch 404 and forward to error handler
-// error handler
 module.exports = app;

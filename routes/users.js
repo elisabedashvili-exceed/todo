@@ -6,6 +6,7 @@ const saltRounds = 10;
 let { User } = require("../models/users");
 
 const SECRET = "this is a secret phrase";
+var token;
 
 router.post("/addUser", (req, res, next) => {
   if (Object.keys(req.body).length > 0) {
@@ -37,7 +38,7 @@ router.post("/login", (req, res) => {
       } else {
         bcrypt.compare(req.body.password, user.password, (err, result) => {
           if (result) {
-            var token = jwt.sign(
+            token = jwt.sign(
               {
                 username: req.body.username,
               },
@@ -47,7 +48,6 @@ router.post("/login", (req, res) => {
             res.json({
               token: token,
             });
-            res.send("Successfully Logged In");
           } else {
             res.send("Incorrect password");
           }
@@ -60,7 +60,7 @@ router.post("/login", (req, res) => {
 });
 
 const checkToken = (req, res, next) => {
-  const token = req.query.token || req.headers.token || req.cookies.token;
+  //const token = req.query.token || req.headers.token || req.cookies.token;
   //we make sure the url required for requesting a token is not protected
   if (req.url.indexOf("/tokens") !== -1) return next();
   if (!token) {
@@ -81,5 +81,5 @@ router.get("/checkToken", checkToken, (req, res) => {
 
 module.exports = {
   router: router,
-  checkToken: checkToken,
+  checkToken: checkToken
 };

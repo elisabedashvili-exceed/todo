@@ -25,5 +25,5 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use("/", toDoItemsRouter);
 app.use("/", usersRouter.router);
-
+console.log(mongoose.Collection.collectionName)
 module.exports = app;

@@ -22,8 +22,6 @@ router.post("/addUser", (req, res, next) => {
         .catch((err) => {
           res.send(err);
         });
-      //Log user
-      console.log(hashUser);
     });
   } else {
     res.send("please fill in the body");

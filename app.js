@@ -10,7 +10,7 @@ app.use(cors());
 
 const uri =
   "mongodb+srv://vaxo_nba:Swz8qfii9kkK9I1d@firstcluster-5d6tv.mongodb.net/test?retryWrites=true&w=majority";
-mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true });
 
 const toDoItemsRouter = require("./routes/todoitems");
 const usersRouter = require("./routes/users");
@@ -25,5 +25,5 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use("/", toDoItemsRouter);
 app.use("/", usersRouter.router);
-console.log(mongoose.Collection.collectionName)
+
 module.exports = app;

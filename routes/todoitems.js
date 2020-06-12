@@ -1,9 +1,11 @@
 const express = require('express');
 const router = express.Router();
-let { Item } = require('../models/items');
+const jwt = require('jsonwebtoken');
 
-router.get('/', (req, res) => {
-  Item.find({})
+let { Item } = require('../models/items'); 
+
+router.get('/:username', (req, res) => {
+  Item.find({ user: req.params.username })
   .then(doc => {
     res.send(doc);
   })
